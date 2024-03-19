@@ -25,6 +25,8 @@ stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 # Initialize app
 app = Dash(__name__, external_stylesheets=stylesheets)
 
+server = app.server
+
 # Define layout and elements
 app.layout = html.Div([
     html.H1("GDP per Capita for Various Countries Over the Years"),  # Title
