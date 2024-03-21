@@ -21,11 +21,10 @@ df.iloc[:, 1:] = df.iloc[:, 1:].applymap(convert_to_numeric)
 
 # Load the CSS stylesheet
 stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+server = app.server
 
 # Initialize app
 app = Dash(__name__, external_stylesheets=stylesheets)
-
-server = app.server
 
 # Define layout and elements
 app.layout = html.Div([
@@ -42,7 +41,7 @@ app.layout = html.Div([
             style={'width':'100%'}
         )
     ], style={'width': '50%', 'display': 'inline-block'}),
-# Slider component
+    # Slider component
     html.Div([
         html.Label('Select Year Range:'),
         dcc.RangeSlider(
@@ -78,19 +77,18 @@ app.layout = html.Div([
      Input('range-slider-1', 'value')]
 )
 def update_graph(selected_countries, selected_years):
-    if dash.callback_context.triggered[0]['prop_id'] == 'country.value':
-        # Update based on dropdown selection
-        if selected_countries:
-            #filter the df for the selected countries
-            filtered_df = df[df['country'].isin(selected_countries)]
-        else:
-            # Copy the original df if no country is selected
-            filtered_df = df.copy()
-    else:
-        # Update based on slider selection for the start and end years
+    # Initialize filtered dataframe
+    filtered_df = df.copy()
+
+    # Apply dropdown filter
+    if selected_countries:
+        filtered_df = df[df['country'].isin(selected_countries)]
+
+    # Apply slider filter
+    if selected_years:
         start_year, end_year = selected_years
         # Exclude the 'country' column from filtering
-        filtered_df = df.loc[:, ['country'] + [col for col in df.columns if col.isdigit() and int(col) >= start_year and int(col) <= end_year]]
+        filtered_df = filtered_df.loc[:, ['country'] + [col for col in df.columns if col.isdigit() and int(col) >= start_year and int(col) <= end_year]]
 
     return px.line(
         pd.melt(filtered_df, id_vars=['country'], var_name='year', value_name='gdpPercap'),
@@ -100,6 +98,8 @@ def update_graph(selected_countries, selected_years):
         title='GDP Per Capita Over Time',
         labels={'year': 'Year', 'gdpPercap': 'GDP Per Capita'}
     )
+
+
 
 # Run the app
 if __name__ == '__main__':
