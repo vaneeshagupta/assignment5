@@ -21,10 +21,10 @@ df.iloc[:, 1:] = df.iloc[:, 1:].applymap(convert_to_numeric)
 
 # Load the CSS stylesheet
 stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-server = app.server
 
 # Initialize app
 app = Dash(__name__, external_stylesheets=stylesheets)
+server = app.server
 
 # Define layout and elements
 app.layout = html.Div([
